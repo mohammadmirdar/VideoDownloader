@@ -43,29 +43,14 @@ object NetworkModule {
             .build()
     }
 
-    @IntoSet
-    @Provides
-    fun provideUserAgentInterceptor(
-        moshi: Moshi,
-        config: AppConfig
-    ): Interceptor {
-        return UserAgentInterceptor(
-            moshi = moshi,
-            config = config,
-        )
-    }
 
     @Provides
     fun provideOkHttp(
-        interceptors: MutableSet<Interceptor>,
-        chuckerInterceptor: ChuckerInterceptor,
         loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder().apply {
             connectTimeout(TIME_OUT, TimeUnit.SECONDS)
-            interceptors.forEach(::addInterceptor)
             addInterceptor(loggingInterceptor)
-            addInterceptor(chuckerInterceptor)
         }.build()
     }
 

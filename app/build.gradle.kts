@@ -25,13 +25,13 @@ android {
         buildConfigField(
             "String",
             "KEY_BASE_URL",
-            "\"http://localhost:8080/api\""
+            "\"http://192.168.1.103:8080/api/\""
         )
 
         buildConfigField(
             "String",
             "KEY_DEVICE_TYPE",
-            "mobile"
+            "\"mobile\""
         )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
