@@ -1,3 +1,6 @@
+import com.android.build.gradle.LibraryExtension
+import org.gradle.kotlin.dsl.getByType
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -12,3 +15,23 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
+
+subprojects {
+    if (path.isComposeEnabled()) {
+        with(rootProject.libs) {
+            pluginManager.apply(plugins.android.library.get().pluginId)
+            pluginManager.apply(plugins.compose.compiler.get().pluginId)
+            with(extensions.getByType<LibraryExtension>()) {
+                buildFeatures {
+                    compose = true
+                }
+            }
+        }
+    }
+}
+fun String.isDomain(): Boolean = startsWith(":domain:")
+fun String.isFeature(): Boolean = startsWith(":feature:")
+fun String.isData(): Boolean = startsWith(":data:")
+fun String.isComposeEnabled(): Boolean = isFeature() ||
+        endsWith(":navigation") ||
+        endsWith(":designsystem")
