@@ -6,14 +6,15 @@ import androidx.compose.ui.graphics.Color
 
 @Immutable
 data class VideoDownloaderColors(
-    val primary: Color = Color(0xFFFEC23B),
+    val primary: Color = Color(0xFF8E0098),
     val white: Color = Color(0xFFFFFFFF),
     val black: Color = Color(0xFF000000),
-    val orange: Color = Color(0xFFE46E38),
+    val blue: Color = Color(0xFF0300D2),
     val brown: Color = Color(0xFF4A3403),
     val container: Color = Color(0xFF3F3F3F),
-    val gray: Color = Color(0xFFc4c4c4),
-    val darkGray: Color = Color(0xFF444444),
+    val lightGray: Color = Color(0xFFFBFBFB),
+    val gray: Color = Color(0xFFD2D2D2),
+    val darkGray: Color = Color(0xFF888888),
     val onSurface: Color = Color(0xFFE3E3E3),
     val layer05: Color = Color(0xFFEDF1F5),
     val layer85: Color = Color(0xFF252629),

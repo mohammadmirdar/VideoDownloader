@@ -89,8 +89,5 @@ dependencies {
         testImplementation(mockK)
         testImplementation(coroutine.test)
         testImplementation(turbine)
-
-        implementation(compose.navigation)
-        implementation(kotlinx.serialization.json)
     }
 }
