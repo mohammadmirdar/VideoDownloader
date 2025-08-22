@@ -22,6 +22,18 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField(
+            "String",
+            "KEY_BASE_URL",
+            "\"http://localhost:8080/api\""
+        )
+
+        buildConfigField(
+            "String",
+            "KEY_DEVICE_TYPE",
+            "mobile"
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -45,6 +57,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -90,5 +103,10 @@ dependencies {
         testImplementation(mockK)
         testImplementation(coroutine.test)
         testImplementation(turbine)
+
+        // Chucker
+        debugImplementation(chucker.debug)
+        releaseImplementation(chucker.release)
+
     }
 }
