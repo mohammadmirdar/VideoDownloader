@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,8 +30,11 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mirdar.designsystem.components.GradientButton
@@ -87,10 +92,11 @@ private fun HomeContent(modifier: Modifier = Modifier) {
 private fun HomePager(modifier: Modifier = Modifier) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     HorizontalPager(
-        modifier = modifier.padding(18.dp),
-        state = pagerState
+        modifier = modifier.fillMaxSize(),
+        state = pagerState,
+        contentPadding = PaddingValues(32.dp),
     ) { page ->
-        PagerItem()
+        PagerItem(modifier.fillMaxWidth(0.8f))
     }
 }
 
@@ -116,6 +122,52 @@ private fun PagerItem(modifier: Modifier = Modifier) {
                 .align(Alignment.TopEnd)
                 .padding(10.dp)
         )
+
+        ItemDescription(
+            title = "Mazandaran, Elit",
+            description = "It has some Mountains in the village",
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(vertical = 26.dp, horizontal = 22.dp)
+        )
+    }
+}
+
+@Composable
+private fun ItemDescription(title: String, description: String, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .clip(
+                shape = RoundedCornerShape(15.dp)
+            )
+    ) {
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(VideoDownloaderTheme.colors.white.copy(alpha = 0.5f))
+                .blur(radius = 16.dp)
+        )
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = VideoDownloaderTheme.colors.black,
+                maxLines = 1
+            )
+
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = VideoDownloaderTheme.colors.gray,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
