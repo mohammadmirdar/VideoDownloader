@@ -1,6 +1,7 @@
 package com.mirdar.videodownloader.feature.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -37,34 +42,44 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mirdar.designsystem.components.GradientButton
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.R
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
     Scaffold(containerColor = VideoDownloaderTheme.colors.white, topBar = {
         HomeTopBar(modifier = Modifier)
     }, bottomBar = {
         HomeBottomBar()
     }) { paddingValues ->
-        HomeContent(modifier = Modifier.padding(paddingValues))
+        HomeContent(
+            onSubmitClick = homeViewModel::getVideoInfo,
+            modifier = Modifier.padding(paddingValues)
+        )
     }
 }
 
 @Composable
-private fun HomeContent(modifier: Modifier = Modifier) {
+private fun HomeContent(onSubmitClick: (String) -> Unit, modifier: Modifier = Modifier) {
+    var textValue by remember { mutableStateOf("") }
+
     Column(
         modifier = modifier.padding(horizontal = 26.dp)
     ) {
         Text(
-            text = "Download Video from everywhere", color = VideoDownloaderTheme.colors.darkGray
+            text = "Download Video from everywhere",
+            color = VideoDownloaderTheme.colors.darkGray,
+            modifier = Modifier.clickable(onClick = { onSubmitClick(textValue) })
         )
 
         Spacer(Modifier.height(38.dp))
 
         OutlinedTextField(
-            value = "", onValueChange = { }, placeholder = {
+            value = textValue, onValueChange = { textValue = it }, placeholder = {
                 Text(
                     text = "Paste Link here"
                 )

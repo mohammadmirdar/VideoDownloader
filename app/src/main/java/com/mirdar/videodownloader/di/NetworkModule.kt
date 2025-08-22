@@ -1,18 +1,14 @@
 package com.mirdar.videodownloader.di
 
 import arrow.retrofit.adapter.either.EitherCallAdapterFactory
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.mirdar.videodownloader.model.AppConfig
 import com.mirdar.videodownloader.util.DateAdapter
-import com.mirdar.videodownloader.util.interceptor.UserAgentInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dagger.multibindings.IntoSet
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -43,29 +39,14 @@ object NetworkModule {
             .build()
     }
 
-    @IntoSet
-    @Provides
-    fun provideUserAgentInterceptor(
-        moshi: Moshi,
-        config: AppConfig
-    ): Interceptor {
-        return UserAgentInterceptor(
-            moshi = moshi,
-            config = config,
-        )
-    }
 
     @Provides
     fun provideOkHttp(
-        interceptors: MutableSet<Interceptor>,
-        chuckerInterceptor: ChuckerInterceptor,
         loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder().apply {
             connectTimeout(TIME_OUT, TimeUnit.SECONDS)
-            interceptors.forEach(::addInterceptor)
             addInterceptor(loggingInterceptor)
-            addInterceptor(chuckerInterceptor)
         }.build()
     }
 
