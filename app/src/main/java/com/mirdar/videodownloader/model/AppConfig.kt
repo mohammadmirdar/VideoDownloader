@@ -13,4 +13,5 @@ data class AppConfig(
     val deviceType: String,
     val versionName: String,
     val applicationId: String,
+    val adiveryId: String,
 )

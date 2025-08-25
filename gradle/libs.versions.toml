@@ -84,6 +84,7 @@ junitKtx = "1.2.1"
 foundationAndroid = "1.8.3"
 materialVersion = "1.12.0"
 appcompat = "1.6.1"
+adivery = "4.8.5"
 
 [libraries]
 # Test Libraries
@@ -192,6 +193,8 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
+adivery = { module = "com.adivery:sdk", version.ref = "adivery" }
 
 [plugins]
 android-test = { id = "com.android.test", version.ref = "agp" }

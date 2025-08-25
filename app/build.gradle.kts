@@ -34,6 +34,12 @@ android {
             "\"mobile\""
         )
 
+        buildConfigField(
+            "String",
+            "ADIVERY_ID",
+            "\"fd2d728f-438d-425f-b8f8-99a1601f32f2\""
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -95,6 +101,8 @@ dependencies {
         implementation(bundles.compose)
         implementation(platform(compose.bom))
         debugImplementation(compose.ui.tooling)
+
+        implementation(adivery)
 
         // Test
         testImplementation(junit)

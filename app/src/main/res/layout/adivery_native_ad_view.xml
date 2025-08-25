@@ -1,0 +1,7 @@
+<com.adivery.sdk.AdiveryNativeAdView android:id="@+id/native_ad_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:placement_id="35a9a8ed-d993-4b88-8fa0-7cdcb29b76d2"
+    app:adivery_native_ad_layout="@layout/adivery_native_ad_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
