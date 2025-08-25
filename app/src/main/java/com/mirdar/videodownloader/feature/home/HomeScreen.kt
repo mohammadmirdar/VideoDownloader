@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +19,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -28,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,18 +43,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
+import com.mirdar.designsystem.components.AppDefaults
 import com.mirdar.designsystem.components.GradientButton
+import com.mirdar.designsystem.components.GradientOutlineButton
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.R
 
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     Scaffold(containerColor = VideoDownloaderTheme.colors.white, topBar = {
         HomeTopBar(modifier = Modifier)
@@ -57,8 +67,7 @@ fun HomeScreen(
         HomeBottomBar()
     }) { paddingValues ->
         HomeContent(
-            onSubmitClick = homeViewModel::getVideoInfo,
-            modifier = Modifier.padding(paddingValues)
+            onSubmitClick = {}, modifier = Modifier.padding(paddingValues)
         )
     }
 }
@@ -70,13 +79,7 @@ private fun HomeContent(onSubmitClick: (String) -> Unit, modifier: Modifier = Mo
     Column(
         modifier = modifier.padding(horizontal = 26.dp)
     ) {
-        Text(
-            text = "Download Video from everywhere",
-            color = VideoDownloaderTheme.colors.darkGray,
-            modifier = Modifier.clickable(onClick = { onSubmitClick(textValue) })
-        )
-
-        Spacer(Modifier.height(38.dp))
+            Spacer(Modifier.height(26.dp))
 
         OutlinedTextField(
             value = textValue, onValueChange = { textValue = it }, placeholder = {
@@ -89,17 +92,121 @@ private fun HomeContent(onSubmitClick: (String) -> Unit, modifier: Modifier = Mo
             ), modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(Modifier.height(20.dp))
+
+        ButtonRow()
+
         Spacer(Modifier.height(42.dp))
 
-        LatestDownloadsTitle()
-
-        Spacer(Modifier.height(40.dp))
-
-        Tabs()
+        LatestDownloadList()
 
         Spacer(Modifier.height(45.dp))
 
-        HomePager()
+
+    }
+}
+
+@Composable
+fun LatestDownloadList(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                color = VideoDownloaderTheme.colors.lightGray, shape = RoundedCornerShape(15.dp)
+            )
+            .padding(8.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            (0..2).forEach {
+                DownloadItem()
+                HorizontalDivider(thickness = 2.dp, color = VideoDownloaderTheme.colors.gray)
+            }
+
+            ViewAllItem()
+        }
+    }
+}
+
+@Composable
+private fun ViewAllItem(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(45.dp), contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "View All",
+            style = MaterialTheme.typography.bodyLarge,
+            color = VideoDownloaderTheme.colors.black
+        )
+    }
+}
+
+@Composable
+private fun DownloadItem(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
+    ) {
+        AsyncImage(
+            model = "",
+            contentDescription = null,
+            modifier = Modifier
+                .height(60.dp)
+                .aspectRatio(1.618f)
+                .clip(RoundedCornerShape(15.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = "Downloading...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = VideoDownloaderTheme.colors.black
+            )
+
+            GradientLinearProgressBar(progress = 0.75f, modifier = Modifier.padding(end = 18.dp))
+        }
+
+        VerticalDivider(
+            Modifier
+                .height(32.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            thickness = 2.dp,
+            color = VideoDownloaderTheme.colors.darkGray
+        )
+
+        Icon(
+            Icons.Default.Clear,
+            contentDescription = null,
+            modifier = Modifier.size(30.dp),
+            tint = VideoDownloaderTheme.colors.darkGray
+        )
+    }
+}
+
+@Composable
+fun ButtonRow(modifier: Modifier = Modifier) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier
+    ) {
+        GradientOutlineButton(
+            onClick = {}, text = "Paste link", modifier = Modifier.weight(1f)
+        )
+
+        GradientButton(
+            text = "Download", isSelected = true, onClick = {}, modifier = Modifier.weight(1f)
+        )
     }
 }
 
@@ -151,10 +258,9 @@ private fun PagerItem(modifier: Modifier = Modifier) {
 @Composable
 private fun ItemDescription(title: String, description: String, modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .clip(
-                shape = RoundedCornerShape(15.dp)
-            )
+        modifier = modifier.clip(
+            shape = RoundedCornerShape(15.dp)
+        )
     ) {
         Box(
             modifier = Modifier
@@ -279,6 +385,31 @@ private fun HomeBottomBar(modifier: Modifier = Modifier) {
         }
     }
 }
+
+@Composable
+fun GradientLinearProgressBar(
+    progress: Float, // value from 0f..1f
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = Color.LightGray.copy(alpha = 0.3f),
+    height: Dp = 6.dp,
+    shape: Shape = RoundedCornerShape(50) // pill shaped
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(height)
+            .clip(shape)
+            .background(backgroundColor)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(fraction = progress.coerceIn(0f, 1f))
+                .background(AppDefaults.brush)
+        )
+    }
+}
+
 
 @Composable
 @Preview(device = "id:pixel_8_pro")
