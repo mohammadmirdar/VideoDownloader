@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -43,13 +44,19 @@ fun HomeScreen(
         HomeBottomBar()
     }) { paddingValues ->
         HomeContent(
-            onSubmitClick = {}, modifier = Modifier.padding(paddingValues)
+            onDownloadClick = {},
+            onPasteClick = {},
+            modifier = Modifier.padding(paddingValues)
         )
     }
 }
 
 @Composable
-private fun HomeContent(onSubmitClick: (String) -> Unit, modifier: Modifier = Modifier) {
+private fun HomeContent(
+    onDownloadClick: (String) -> Unit,
+    onPasteClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var textValue by remember { mutableStateOf("") }
     var nativeAdView: AdiveryNativeAdView? by remember { mutableStateOf(null) }
 
@@ -65,7 +72,7 @@ private fun HomeContent(onSubmitClick: (String) -> Unit, modifier: Modifier = Mo
         OutlinedTextField(
             value = textValue, onValueChange = { textValue = it }, placeholder = {
                 Text(
-                    text = "Paste Link here"
+                    text = stringResource(R.string.paste_link_here)
                 )
             }, shape = RoundedCornerShape(size = 20.dp), colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = VideoDownloaderTheme.colors.white,
@@ -75,7 +82,10 @@ private fun HomeContent(onSubmitClick: (String) -> Unit, modifier: Modifier = Mo
 
         Spacer(Modifier.height(20.dp))
 
-        ButtonRow()
+        ButtonRow(
+            onDownloadClick = { onDownloadClick(textValue) },
+            onPasteClick = onPasteClick
+        )
 
         Spacer(Modifier.height(42.dp))
 
@@ -97,18 +107,27 @@ private fun HomeContent(onSubmitClick: (String) -> Unit, modifier: Modifier = Mo
 }
 
 @Composable
-fun ButtonRow(modifier: Modifier = Modifier) {
+fun ButtonRow(
+    onDownloadClick: () -> Unit,
+    onPasteClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
     ) {
         GradientOutlineButton(
-            onClick = {}, text = "Paste link", modifier = Modifier.weight(1f)
+            onClick = onPasteClick,
+            text = stringResource(R.string.paste_link),
+            modifier = Modifier.weight(1f)
         )
 
         GradientButton(
-            text = "Download", isSelected = true, onClick = {}, modifier = Modifier.weight(1f)
+            text = stringResource(R.string.download),
+            isSelected = true,
+            onClick = onDownloadClick,
+            modifier = Modifier.weight(1f)
         )
     }
 }

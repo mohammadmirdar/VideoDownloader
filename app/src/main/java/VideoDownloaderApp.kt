@@ -17,5 +17,6 @@ class VideoDownloaderApp : Application() {
 
         Adivery.configure(this, appConfig.adiveryId)
 
+        Adivery.prepareRewardedAd(this, appConfig.adiveryRewardId)
     }
 }

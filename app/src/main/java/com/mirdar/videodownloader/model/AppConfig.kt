@@ -14,4 +14,5 @@ data class AppConfig(
     val versionName: String,
     val applicationId: String,
     val adiveryId: String,
+    val adiveryRewardId: String,
 )

@@ -40,6 +40,12 @@ android {
             "\"fd2d728f-438d-425f-b8f8-99a1601f32f2\""
         )
 
+        buildConfigField(
+            "String",
+            "ADIVERY_REWARD_ID",
+            "\"3eccb233-f711-4baf-b919-fd7bf3e657a4\""
+        )
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

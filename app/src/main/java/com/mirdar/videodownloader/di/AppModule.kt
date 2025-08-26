@@ -29,7 +29,8 @@ internal object AppModule {
         versionCode = BuildConfig.VERSION_CODE,
         versionName = BuildConfig.VERSION_NAME,
         applicationId = BuildConfig.APPLICATION_ID,
-        adiveryId = BuildConfig.ADIVERY_ID
+        adiveryId = BuildConfig.ADIVERY_ID,
+        adiveryRewardId = BuildConfig.ADIVERY_REWARD_ID
     )
 
     @Provides
