@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.adivery.sdk.AdiveryNativeAdView
 import com.mirdar.designsystem.components.GradientButton
 import com.mirdar.designsystem.components.GradientOutlineButton
@@ -37,6 +38,7 @@ import com.mirdar.videodownloader.feature.home.component.LatestDownloadList
 
 @Composable
 fun HomeScreen(
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     Scaffold(containerColor = VideoDownloaderTheme.colors.white, topBar = {
         HomeTopBar(modifier = Modifier)
@@ -44,7 +46,7 @@ fun HomeScreen(
         HomeBottomBar()
     }) { paddingValues ->
         HomeContent(
-            onDownloadClick = {},
+            onDownloadClick = homeViewModel::onDownloadClicked,
             onPasteClick = {},
             modifier = Modifier.padding(paddingValues)
         )
@@ -74,10 +76,14 @@ private fun HomeContent(
                 Text(
                     text = stringResource(R.string.paste_link_here)
                 )
-            }, shape = RoundedCornerShape(size = 20.dp), colors = OutlinedTextFieldDefaults.colors(
+            },
+            shape = RoundedCornerShape(size = 20.dp),
+            colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = VideoDownloaderTheme.colors.white,
-                unfocusedBorderColor = VideoDownloaderTheme.colors.gray
-            ), modifier = Modifier.fillMaxWidth()
+                unfocusedBorderColor = VideoDownloaderTheme.colors.gray,
+                focusedTextColor = VideoDownloaderTheme.colors.black
+            ),
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(Modifier.height(20.dp))
