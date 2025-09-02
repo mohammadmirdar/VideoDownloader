@@ -67,7 +67,7 @@ class DownloadService : Service() {
         indeterminate: Boolean = false
     ): Notification {
         val nm =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= 26) {
             val ch = NotificationChannel(
                 CHANNEL_ID,

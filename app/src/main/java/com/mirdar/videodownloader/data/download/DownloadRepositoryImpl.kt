@@ -49,8 +49,7 @@ class DownloadRepositoryImpl @Inject constructor(
     }
 
     private fun downloadProgressive(request: DownloadRequest) = callbackFlow {
-        val scope = CoroutineScope(Dispatchers.IO)
-        val job = scope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
 
                 val cacheFile = File(
@@ -114,9 +113,7 @@ class DownloadRepositoryImpl @Inject constructor(
             }
         }
 
-        awaitClose {
-            cancel(request.id)
-        }
+        awaitClose()
     }
 
     private fun downloadHls(request: DownloadRequest): Flow<DownloadStatus> = flow {
@@ -165,7 +162,7 @@ class DownloadRepositoryImpl @Inject constructor(
     }
 
     private fun mergeSegments(segments: List<File>, fileName: String) {
-        val moviesDir = context.getExternalFilesDir(Environment.DIRECTORY_MOVIES)
+        val moviesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
             ?: throw IOException("Movies directory not available")
 
         val outputFile = File(moviesDir, "${fileName}.mp4")
