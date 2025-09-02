@@ -71,6 +71,9 @@ android {
         compose = true
         buildConfig = true
     }
+    kotlinOptions {
+        freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+    }
 }
 
 dependencies {
@@ -122,5 +125,6 @@ dependencies {
         debugImplementation(chucker.debug)
         releaseImplementation(chucker.release)
 
+        implementation(bundles.room)
     }
 }

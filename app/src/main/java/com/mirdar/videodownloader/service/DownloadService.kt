@@ -9,9 +9,8 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.mirdar.videodownloader.data.download.model.DownloadId
-import com.mirdar.videodownloader.data.download.model.DownloadRequest
-import com.mirdar.videodownloader.data.download.model.DownloadStatus
+import com.mirdar.videodownloader.data.download.remote.model.DownloadRequest
+import com.mirdar.videodownloader.data.download.remote.model.DownloadStatus
 import com.mirdar.videodownloader.domain.download.usecase.CancelDownloadUseCase
 import com.mirdar.videodownloader.domain.download.usecase.StartDownloadUseCase
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,7 +46,7 @@ class DownloadService : Service() {
 
         fun start(context: Context, request: DownloadRequest) {
             val intent = Intent(context, DownloadService::class.java).apply {
-                putExtra(EXTRA_ID, request.id.value)
+                putExtra(EXTRA_ID, request.id)
                 putExtra(EXTRA_URL, request.url)
                 putExtra(EXTRA_DEST, request.destination)
                 putExtra(EXTRA_RESUME, request.resumeIfPossible)
@@ -106,7 +105,7 @@ class DownloadService : Service() {
         startForeground(NOTIF_ID, buildNotification(this, title = "Preparing…"))
 
 
-        val request = DownloadRequest(DownloadId(id), url, dest, resumeIfPossible = resume)
+        val request = DownloadRequest(id, url, dest, resumeIfPossible = resume)
         activeJob?.cancel()
         activeJob = serviceScope.launch {
             startDownload(request).collectLatest { status ->

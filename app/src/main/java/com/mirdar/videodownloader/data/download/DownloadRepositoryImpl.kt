@@ -1,15 +1,11 @@
 package com.mirdar.videodownloader.data.download
 
-import android.content.ContentResolver
 import android.content.Context
-import android.net.Uri
 import android.os.Environment
-import android.os.ParcelFileDescriptor
-import com.mirdar.videodownloader.com.mirdar.videodownloader.data.download.DownloadApi
-import com.mirdar.videodownloader.data.download.model.DownloadId
-import com.mirdar.videodownloader.data.download.model.DownloadProgress
-import com.mirdar.videodownloader.data.download.model.DownloadRequest
-import com.mirdar.videodownloader.data.download.model.DownloadStatus
+import com.mirdar.videodownloader.data.download.remote.DownloadApi
+import com.mirdar.videodownloader.data.download.remote.model.DownloadProgress
+import com.mirdar.videodownloader.data.download.remote.model.DownloadRequest
+import com.mirdar.videodownloader.data.download.remote.model.DownloadStatus
 import com.mirdar.videodownloader.domain.download.DownloadRepository
 import com.mirdar.videodownloader.domain.download.VideoType
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,16 +15,13 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Response
 import java.io.File
-import java.io.FileDescriptor
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
@@ -38,7 +31,7 @@ class DownloadRepositoryImpl @Inject constructor(
 ) : DownloadRepository {
 
 
-    private val jobs = ConcurrentHashMap<DownloadId, Job>()
+    private val jobs = ConcurrentHashMap<String, Job>()
 
 
     override fun download(request: DownloadRequest, videoType: VideoType): Flow<DownloadStatus> {
@@ -49,7 +42,7 @@ class DownloadRepositoryImpl @Inject constructor(
     }
 
     private fun downloadProgressive(request: DownloadRequest) = callbackFlow {
-        CoroutineScope(Dispatchers.IO).launch {
+        val job = CoroutineScope(Dispatchers.IO).launch {
             try {
 
                 val cacheFile = File(
@@ -73,7 +66,6 @@ class DownloadRepositoryImpl @Inject constructor(
                 }
 
 
-                // Total length: for 206 Partial Content, content-range reports total; else content-length.
                 val totalBytes: Long? = when (response.code()) {
                     206 -> parseTotalFromContentRange(response.headers()["Content-Range"]) // may be null
                     else -> body.contentLength().takeIf { it > 0L }
@@ -82,7 +74,7 @@ class DownloadRepositoryImpl @Inject constructor(
                 trySend(DownloadStatus.Started(request.id, totalBytes))
 
                 val contentLength =
-                    response.body()!!.contentLength() // might be -1 for chunked streams
+                    response.body()!!.contentLength()
                 var bytesCopied = 0L
 
                 response.body()!!.byteStream().use { input ->
@@ -113,46 +105,51 @@ class DownloadRepositoryImpl @Inject constructor(
             }
         }
 
+        jobs.put(request.id, job)
+
         awaitClose()
     }
 
-    private fun downloadHls(request: DownloadRequest): Flow<DownloadStatus> = flow {
-        // 1. download m3u8 playlist
-        val destination = File(request.destination.path.orEmpty())
-        val response = api.download(request.url)
-        if (response.body() != null) {
-            val playlist = response.body()!!.string()
-            val segmentUrls = parseM3u8(playlist, request.url)
+    private fun downloadHls(request: DownloadRequest): Flow<DownloadStatus> = callbackFlow {
+        val job = CoroutineScope(Dispatchers.IO).launch {
+            val response = api.download(request.url)
+            if (response.body() != null) {
+                val playlist = response.body()!!.string()
+                val segmentUrls = parseM3u8(playlist, request.url)
 
-            val segmentDir = File(context.cacheDir, "segments").apply { mkdirs() }
-            val segmentFiles = mutableListOf<File>()
+                val segmentDir = File(context.cacheDir, "segments").apply { mkdirs() }
+                val segmentFiles = mutableListOf<File>()
 
-            segmentUrls.forEachIndexed { index, segmentUrl ->
-                val segmentFile = File(segmentDir, "seg_$index.ts")
-                val body = api.download(segmentUrl).body()?.byteStream()
-                segmentFile.outputStream().use { output -> body!!.copyTo(output) }
-                segmentFiles.add(segmentFile)
-                emit(
-                    DownloadStatus.Progress(
-                        DownloadProgress(
-                            id = request.id,
-                            bytesDownloaded = (index + 1).toLong(),
-                            totalBytes = segmentUrls.size.toLong()
+                segmentUrls.forEachIndexed { index, segmentUrl ->
+                    val segmentFile = File(segmentDir, "seg_$index.ts")
+                    val body = api.download(segmentUrl).body()?.byteStream()
+                    segmentFile.outputStream().use { output -> body!!.copyTo(output) }
+                    segmentFiles.add(segmentFile)
+                    trySend(
+                        DownloadStatus.Progress(
+                            DownloadProgress(
+                                id = request.id,
+                                bytesDownloaded = (index + 1).toLong(),
+                                totalBytes = segmentUrls.size.toLong()
+                            )
                         )
                     )
-                )
+                }
+
+                mergeSegments(segmentFiles, request.id)
             }
 
-            // 4. merge .ts into single .mp4
-            mergeSegments(segmentFiles, request.id.value)
+            trySend(
+                DownloadStatus.Completed(
+                    id = request.id,
+                    uri = request.destination
+                )
+            )
         }
 
-        emit(
-            DownloadStatus.Completed(
-                id = request.id,
-                uri = request.destination
-            )
-        )
+        jobs.put(request.id, job)
+
+        awaitClose()
     }
 
     private fun parseM3u8(playlist: String, baseUrl: String): List<String> {
@@ -176,61 +173,13 @@ class DownloadRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun cancel(id: DownloadId) {
+    override fun cancel(id: String) {
         jobs[id]?.cancel()
     }
 
-
     private fun parseTotalFromContentRange(header: String?): Long? {
-        // Example: bytes 200-1000/67589 -> total=67589
         if (header == null) return null
         return header.substringAfter('/')
             .toLongOrNull()
-    }
-
-
-    private fun currentBytes(resolver: ContentResolver, uri: Uri): Long {
-        return try {
-            resolver.openFileDescriptor(uri, "r")?.use { it.statSize.takeIf { s -> s >= 0 } ?: 0L }
-                ?: 0L
-        } catch (_: Throwable) {
-            0L
-        }
-    }
-
-
-    private fun writeStream(
-        body: ResponseBody,
-        pfd: ParcelFileDescriptor,
-        startOffset: Long,
-        totalBytes: Long?,
-        onProgress: (downloadedSoFar: Long) -> Unit,
-    ) {
-        val buffer = ByteArray(DEFAULT_BUFFER)
-        var totalRead = 0L
-        var read: Int
-
-
-        val fd: FileDescriptor = pfd.fileDescriptor
-        FileOutputStream(fd).channel.use { channel ->
-
-            if (startOffset > 0) channel.position(startOffset)
-
-            body.byteStream().use { input ->
-                while (true) {
-                    read = input.read(buffer)
-                    if (read == -1) break
-                    channel.write(ByteBuffer.wrap(buffer, 0, read))
-                    totalRead += read
-                    onProgress(totalRead)
-                }
-                channel.force(true)
-            }
-        }
-    }
-
-
-    companion object {
-        const val DEFAULT_BUFFER = 8 * 1024
     }
 }

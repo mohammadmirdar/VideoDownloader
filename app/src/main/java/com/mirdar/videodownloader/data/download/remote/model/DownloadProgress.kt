@@ -1,7 +1,8 @@
-package com.mirdar.videodownloader.data.download.model
+package com.mirdar.videodownloader.data.download.remote.model
+
 
 data class DownloadProgress(
-    val id: DownloadId,
+    val id: String,
     val bytesDownloaded: Long,
     val totalBytes: Long?, // null if unknown
 ) {

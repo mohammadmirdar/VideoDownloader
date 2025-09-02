@@ -2,9 +2,6 @@ package com.mirdar.videodownloader.di
 
 import android.content.Context
 import com.mirdar.videodownloader.BuildConfig
-import com.mirdar.videodownloader.com.mirdar.videodownloader.data.download.DownloadApi
-import com.mirdar.videodownloader.data.download.DownloadRepositoryImpl
-import com.mirdar.videodownloader.domain.download.DownloadRepository
 import com.mirdar.videodownloader.model.AppConfig
 import com.mirdar.videodownloader.util.StringResourceProvider
 import com.mirdar.videodownloader.util.StringResourceProviderImpl
@@ -13,7 +10,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import jakarta.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

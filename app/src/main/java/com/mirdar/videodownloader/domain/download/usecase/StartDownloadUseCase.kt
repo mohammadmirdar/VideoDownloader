@@ -1,7 +1,7 @@
 package com.mirdar.videodownloader.domain.download.usecase
 
-import com.mirdar.videodownloader.data.download.model.DownloadRequest
-import com.mirdar.videodownloader.data.download.model.DownloadStatus
+import com.mirdar.videodownloader.data.download.remote.model.DownloadRequest
+import com.mirdar.videodownloader.data.download.remote.model.DownloadStatus
 import com.mirdar.videodownloader.domain.download.DownloadRepository
 import com.mirdar.videodownloader.domain.download.VideoType
 import jakarta.inject.Inject

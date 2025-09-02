@@ -8,8 +8,7 @@ import androidx.lifecycle.viewModelScope
 import arrow.retrofit.adapter.either.networkhandling.CallError
 import com.adivery.sdk.Adivery
 import com.adivery.sdk.AdiveryListener
-import com.mirdar.videodownloader.data.download.model.DownloadId
-import com.mirdar.videodownloader.data.download.model.DownloadRequest
+import com.mirdar.videodownloader.data.download.remote.model.DownloadRequest
 import com.mirdar.videodownloader.domain.download.usecase.CancelDownloadUseCase
 import com.mirdar.videodownloader.domain.home.model.VideoInfoModel
 import com.mirdar.videodownloader.domain.home.usecase.GetVideoInfoUseCase
@@ -87,7 +86,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun startDownload(context: Context, videoUrl: String) {
-        val id = DownloadId(System.currentTimeMillis().toString())
+        val id = System.currentTimeMillis().toString()
 
         val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
         if (downloadsDir == null) {
