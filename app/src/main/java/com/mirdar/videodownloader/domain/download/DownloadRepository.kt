@@ -11,4 +11,5 @@ interface DownloadRepository {
 
     /** Cancel an in-flight download by id. */
     fun cancel(id: String)
+    suspend fun insetToDb(downloadRequest: DownloadRequest)
 }

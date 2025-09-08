@@ -70,7 +70,7 @@ class HomeViewModel @Inject constructor(
     private fun onRightVideoInfo(videoInfoModel: VideoInfoModel) {
         startDownload(
             context = context,
-            videoUrl = videoInfoModel.directUrl
+            videoInfoModel = videoInfoModel
         )
 
         _state.value = HomeUiState(
@@ -85,7 +85,7 @@ class HomeViewModel @Inject constructor(
         _state.value = callError.toError()
     }
 
-    private fun startDownload(context: Context, videoUrl: String) {
+    private fun startDownload(context: Context, videoInfoModel: VideoInfoModel) {
         val id = System.currentTimeMillis().toString()
 
         val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
@@ -105,8 +105,11 @@ class HomeViewModel @Inject constructor(
 
         val request = DownloadRequest(
             id = id,
-            url = videoUrl,
-            destination = destinationUri
+            url = videoInfoModel.directUrl,
+            destination = destinationUri,
+            thumbnail = videoInfoModel.thumbnail,
+            title = videoInfoModel.title,
+            description = videoInfoModel.description
         )
 
         DownloadService.start(context, request)

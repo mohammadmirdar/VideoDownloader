@@ -2,10 +2,13 @@ package com.mirdar.videodownloader.data.download
 
 import android.content.Context
 import android.os.Environment
+import com.mirdar.videodownloader.data.download.cache.DownloadDao
+import com.mirdar.videodownloader.data.download.cache.model.CacheDownload
 import com.mirdar.videodownloader.data.download.remote.DownloadApi
 import com.mirdar.videodownloader.data.download.remote.model.DownloadProgress
 import com.mirdar.videodownloader.data.download.remote.model.DownloadRequest
 import com.mirdar.videodownloader.data.download.remote.model.DownloadStatus
+import com.mirdar.videodownloader.data.download.remote.model.toDbModel
 import com.mirdar.videodownloader.domain.download.DownloadRepository
 import com.mirdar.videodownloader.domain.download.VideoType
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -28,6 +31,7 @@ import javax.inject.Inject
 class DownloadRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val api: DownloadApi,
+    private val db: DownloadDao
 ) : DownloadRepository {
 
 
@@ -175,6 +179,10 @@ class DownloadRepositoryImpl @Inject constructor(
 
     override fun cancel(id: String) {
         jobs[id]?.cancel()
+    }
+
+    override suspend fun insetToDb(downloadRequest: DownloadRequest) {
+        db.insert(cacheDownload = downloadRequest.toDbModel())
     }
 
     private fun parseTotalFromContentRange(header: String?): Long? {

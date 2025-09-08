@@ -126,5 +126,6 @@ dependencies {
         releaseImplementation(chucker.release)
 
         implementation(bundles.room)
+        kapt(room.compiler)
     }
 }

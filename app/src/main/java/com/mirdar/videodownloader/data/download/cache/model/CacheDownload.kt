@@ -19,7 +19,10 @@ class CacheDownload(
     val title: String,
 
     @ColumnInfo(name = COLUMN_DOWNLOAD_DESCRIPTION)
-    val description: String
+    val description: String,
+
+    @ColumnInfo(name = COLUMN_DOWNLOAD_COMPLETED)
+    val isCompleted: Boolean
 ) {
 
     companion object {
@@ -27,6 +30,7 @@ class CacheDownload(
         const val COLUMN_DOWNLOAD_THUMBNAIL = "thumbnail"
         const val COLUMN_DOWNLOAD_TITLE = "title"
         const val COLUMN_DOWNLOAD_DESCRIPTION = "description"
+        const val COLUMN_DOWNLOAD_COMPLETED = "is_completed"
         const val TABLE_NAME = "cache_download"
     }
 }

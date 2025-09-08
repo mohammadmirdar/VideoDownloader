@@ -1,11 +1,13 @@
 package com.mirdar.videodownloader.service
 
+import android.R
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -42,6 +44,9 @@ class DownloadService : Service() {
         const val EXTRA_ID = "extra_id"
         const val EXTRA_URL = "extra_url"
         const val EXTRA_DEST = "extra_dest"
+        const val EXTRA_TITLE = "extra_title"
+        const val EXTRA_DESC = "extra_desc"
+        const val EXTRA_THUMB = "extra_thumb"
         const val EXTRA_RESUME = "extra_resume"
 
         fun start(context: Context, request: DownloadRequest) {
@@ -49,6 +54,9 @@ class DownloadService : Service() {
                 putExtra(EXTRA_ID, request.id)
                 putExtra(EXTRA_URL, request.url)
                 putExtra(EXTRA_DEST, request.destination)
+                putExtra(EXTRA_TITLE, request.title)
+                putExtra(EXTRA_DESC, request.description)
+                putExtra(EXTRA_THUMB, request.thumbnail)
                 putExtra(EXTRA_RESUME, request.resumeIfPossible)
             }
             if (Build.VERSION.SDK_INT >= 26) {
@@ -77,7 +85,7 @@ class DownloadService : Service() {
         }
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.stat_sys_download)
+            .setSmallIcon(R.drawable.stat_sys_download)
             .setContentTitle(title)
             .setOnlyAlertOnce(true)
             .setOngoing(true)
@@ -98,14 +106,25 @@ class DownloadService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val id = intent?.getStringExtra(EXTRA_ID) ?: return START_NOT_STICKY
         val url = intent.getStringExtra(EXTRA_URL) ?: return START_NOT_STICKY
-        val dest = intent.getParcelableExtra<android.net.Uri>(EXTRA_DEST) ?: return START_NOT_STICKY
+        val title = intent.getStringExtra(EXTRA_TITLE) ?: return START_NOT_STICKY
+        val description = intent.getStringExtra(EXTRA_DESC) ?: return START_NOT_STICKY
+        val thumbnail = intent.getStringExtra(EXTRA_THUMB) ?: return START_NOT_STICKY
+        val dest = intent.getParcelableExtra<Uri>(EXTRA_DEST) ?: return START_NOT_STICKY
         val resume = intent.getBooleanExtra(EXTRA_RESUME, true)
 
 
         startForeground(NOTIF_ID, buildNotification(this, title = "Preparing…"))
 
 
-        val request = DownloadRequest(id, url, dest, resumeIfPossible = resume)
+        val request = DownloadRequest(
+            id = id,
+            url = url,
+            destination = dest,
+            resumeIfPossible = resume,
+            thumbnail = thumbnail,
+            title = title,
+            description = description
+        )
         activeJob?.cancel()
         activeJob = serviceScope.launch {
             startDownload(request).collectLatest { status ->
