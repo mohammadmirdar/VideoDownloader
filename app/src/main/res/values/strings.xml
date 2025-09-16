@@ -3,4 +3,24 @@
     <string name="paste_link">Paste link</string>
     <string name="download">Download</string>
     <string name="paste_link_here">Paste Link here</string>
+    <string name="download_channel_name" translatable="false">Download</string>
+    <string name="download_queue" translatable="false">Video is in download queue...</string>
+    <string name="download_downloading" translatable="false">Video is downloading...</string>
+    <string name="download_successfully" translatable="false">Video downloaded successfully</string>
+    <string name="download_unsuccessfully" translatable="false">Video download error!</string>
+    <string name="download_tryـagain_description" translatable="false">Please try again.</string>
+    <string name="download_pause" translatable="false">Download paused</string>
+    <string name="download_tryـagain" translatable="false">Try again</string>
+    <string name="download_downloaded" translatable="false">%1$s Mb / %2$s Mb (٪%3$s)</string>
+    <string name="download_cancel" translatable="false">Download canceled</string>
+    <string name="download_network" translatable="false">Network connection error. Download paused</string>
+    <string name="download_network_connection" translatable="false">Download will be resumed after network connection.</string>
+    <string name="download_complete" translatable="false">Video downloaded successfully</string>
+    <string name="download_resume" translatable="false">Video download resumed</string>
+    <string name="download_stoped" translatable="false">Video download stoped</string>
+    <string name="download_queued" translatable="false">Video queued for download!</string>
+    <string name="download_started">Download started</string>
+    <string name="download_failed">Download failed</string>
+    <string name="go_to_download">Go to download</string>
+    <string name="download_finished">Download finished</string>
 </resources>

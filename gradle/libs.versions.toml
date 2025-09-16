@@ -18,7 +18,7 @@ detekt-compose = "0.4.22"
 google-services = "4.4.3"
 android-library = "8.11.0"
 aparat-changelog = "1.0.0"
-ksp = "2.0.21-1.0.27"
+ksp = "2.2.0-2.0.2"
 
 # Test Library Versions
 junit = "4.13.2"
@@ -86,6 +86,10 @@ foundationAndroid = "1.8.3"
 materialVersion = "1.12.0"
 appcompat = "1.6.1"
 adivery = "4.8.5"
+fetch = "3.4.1"
+dagger = "2.57"
+hiltAndroid = "1.2.0"
+
 
 [libraries]
 # Test Libraries
@@ -136,6 +140,8 @@ ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+androidx-hilt-common = { module = "androidx.hilt:hilt-common", version.ref = "hiltAndroid" }
 
 tv-material = { module = "androidx.tv:tv-material", version.ref = "tv-material" }
 tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "tv-foundation" }
@@ -196,6 +202,10 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 adivery = { module = "com.adivery:sdk", version.ref = "adivery" }
+kotlin-stlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+tonyo-fetch = { module = "com.github.tonyofrancis.Fetch:fetch2", version.ref = "fetch" }
+dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
+dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 
 [plugins]
 android-test = { id = "com.android.test", version.ref = "agp" }

@@ -1,5 +1,4 @@
 import com.android.build.gradle.LibraryExtension
-import org.gradle.kotlin.dsl.getByType
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -14,6 +13,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.detekt)
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 subprojects {
@@ -28,7 +28,51 @@ subprojects {
             }
         }
     }
+
+    project.plugins.configureAppAndModules(subProject = project)
+
 }
+
+
+fun PluginContainer.configureAppAndModules(subProject: Project) = apply {
+    whenPluginAdded {
+        when (this) {
+            is com.android.build.gradle.AppPlugin -> {
+                subProject.extensions
+                    .getByType<com.android.build.gradle.AppExtension>()
+                    .applyAppCommons()
+            }
+
+            is com.android.build.gradle.LibraryPlugin -> {
+                subProject.extensions
+                    .getByType<LibraryExtension>()
+                    .applyLibraryCommons()
+            }
+        }
+    }
+}
+
+fun com.android.build.gradle.AppExtension.applyAppCommons() = apply { applyBaseCommons() }
+
+
+fun LibraryExtension.applyLibraryCommons() = apply {
+    applyBaseCommons()
+}
+
+fun com.android.build.gradle.BaseExtension.applyBaseCommons() = apply {
+    compileSdkVersion(libs.versions.compileSdk.get().toInt())
+
+    defaultConfig.apply {
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+    }
+
+    compileOptions.apply {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
 fun String.isDomain(): Boolean = startsWith(":domain:")
 fun String.isFeature(): Boolean = startsWith(":feature:")
 fun String.isData(): Boolean = startsWith(":data:")

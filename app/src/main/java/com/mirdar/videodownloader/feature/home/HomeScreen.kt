@@ -27,34 +27,44 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.adivery.sdk.AdiveryNativeAdView
 import com.mirdar.designsystem.components.GradientButton
 import com.mirdar.designsystem.components.GradientOutlineButton
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.R
+import com.mirdar.videodownloader.com.mirdar.videodownloader.util.onSuccess
 import com.mirdar.videodownloader.feature.home.component.HomeBottomBar
 import com.mirdar.videodownloader.feature.home.component.HomeTopBar
 import com.mirdar.videodownloader.feature.home.component.LatestDownloadList
+import com.mirdar.videodownloader.feature.home.model.HomeUiState
 
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    Scaffold(containerColor = VideoDownloaderTheme.colors.white, topBar = {
+    val state by homeViewModel.state.collectAsStateWithLifecycle()
+
+    Scaffold(containerColor = VideoDownloaderTheme.colors.white,
+        topBar = {
         HomeTopBar(modifier = Modifier)
     }, bottomBar = {
         HomeBottomBar()
     }) { paddingValues ->
-        HomeContent(
-            onDownloadClick = homeViewModel::onDownloadClicked,
-            onPasteClick = {},
-            modifier = Modifier.padding(paddingValues)
-        )
+        state.onSuccess {
+            HomeContent(
+                uiState = it,
+                onDownloadClick = homeViewModel::onDownloadClicked,
+                onPasteClick = {},
+                modifier = Modifier.padding(paddingValues)
+            )
+        }
     }
 }
 
 @Composable
 private fun HomeContent(
+    uiState: HomeUiState,
     onDownloadClick: (String) -> Unit,
     onPasteClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -95,7 +105,7 @@ private fun HomeContent(
 
         Spacer(Modifier.height(42.dp))
 
-        LatestDownloadList()
+        LatestDownloadList(downloadList = uiState.downloads)
 
         Spacer(Modifier.height(45.dp))
 

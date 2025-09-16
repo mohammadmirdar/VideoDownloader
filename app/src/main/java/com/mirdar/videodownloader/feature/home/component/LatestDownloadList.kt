@@ -26,9 +26,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
+import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadItem
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun LatestDownloadList(modifier: Modifier = Modifier) {
+fun LatestDownloadList(downloadList: ImmutableList<DownloadItem>, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -41,8 +43,8 @@ fun LatestDownloadList(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            (0..2).forEach {_->
-                DownloadItem()
+            downloadList.take(3).forEach { downloadItem ->
+                DownloadItem(downloadItem = downloadItem)
                 HorizontalDivider(thickness = 2.dp, color = VideoDownloaderTheme.colors.gray)
             }
 
@@ -67,7 +69,7 @@ private fun ViewAllItem(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun DownloadItem(modifier: Modifier = Modifier) {
+private fun DownloadItem(downloadItem: DownloadItem, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -89,12 +91,15 @@ private fun DownloadItem(modifier: Modifier = Modifier) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "Downloading...",
+                text = downloadItem.title,
                 style = MaterialTheme.typography.bodyMedium,
                 color = VideoDownloaderTheme.colors.black
             )
 
-            GradientLinearProgressBar(progress = 0.75f, modifier = Modifier.padding(end = 18.dp))
+            GradientLinearProgressBar(
+                progress = downloadItem.progress.toFloat(),
+                modifier = Modifier.padding(end = 18.dp)
+            )
         }
 
         VerticalDivider(
