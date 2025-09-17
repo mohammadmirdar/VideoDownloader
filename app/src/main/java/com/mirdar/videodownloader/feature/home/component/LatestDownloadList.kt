@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
@@ -58,7 +59,7 @@ private fun ViewAllItem(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(45.dp), contentAlignment = Alignment.Center
+            .height(35.dp), contentAlignment = Alignment.Center
     ) {
         Text(
             text = "View All",
@@ -76,10 +77,10 @@ private fun DownloadItem(downloadItem: DownloadItem, modifier: Modifier = Modifi
         horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
     ) {
         AsyncImage(
-            model = "",
+            model = downloadItem.poster,
             contentDescription = null,
             modifier = Modifier
-                .height(60.dp)
+                .height(55.dp)
                 .aspectRatio(1.618f)
                 .clip(RoundedCornerShape(15.dp)),
             contentScale = ContentScale.Crop
@@ -93,11 +94,13 @@ private fun DownloadItem(downloadItem: DownloadItem, modifier: Modifier = Modifi
             Text(
                 text = downloadItem.title,
                 style = MaterialTheme.typography.bodyMedium,
-                color = VideoDownloaderTheme.colors.black
+                color = VideoDownloaderTheme.colors.black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
 
             GradientLinearProgressBar(
-                progress = downloadItem.progress.toFloat(),
+                progress = downloadItem.progress,
                 modifier = Modifier.padding(end = 18.dp)
             )
         }

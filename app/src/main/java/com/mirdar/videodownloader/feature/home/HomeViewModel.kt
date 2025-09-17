@@ -1,5 +1,6 @@
 package com.mirdar.videodownloader.feature.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.retrofit.adapter.either.networkhandling.CallError
@@ -121,6 +122,7 @@ class HomeViewModel @Inject constructor(
         Adivery.addGlobalListener(object : AdiveryListener() {
             override fun onRewardedAdClosed(placementId: String, isRewarded: Boolean) {
                 if (isRewarded) {
+                    getVideoInfo(url = currentRequestedVideo)
                 }
             }
         })
@@ -135,8 +137,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onDownloadClicked(videoUrl: String) {
-        getVideoInfo(url = videoUrl)
-
+        Adivery.showAd(appConfig.adiveryRewardId)
         currentRequestedVideo = videoUrl
     }
 

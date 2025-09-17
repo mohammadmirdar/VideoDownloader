@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -77,7 +79,7 @@ private fun HomeContent(
     }
 
     Column(
-        modifier = modifier.padding(horizontal = 26.dp)
+        modifier = modifier.padding(horizontal = 26.dp).verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.height(26.dp))
 
@@ -93,7 +95,8 @@ private fun HomeContent(
                 unfocusedBorderColor = VideoDownloaderTheme.colors.gray,
                 focusedTextColor = VideoDownloaderTheme.colors.black
             ),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 1,
         )
 
         Spacer(Modifier.height(20.dp))
@@ -103,11 +106,11 @@ private fun HomeContent(
             onPasteClick = onPasteClick
         )
 
-        Spacer(Modifier.height(42.dp))
+        Spacer(Modifier.height(22.dp))
 
         LatestDownloadList(downloadList = uiState.downloads)
 
-        Spacer(Modifier.height(45.dp))
+        Spacer(Modifier.height(22.dp))
 
         AndroidView(
             factory = {
