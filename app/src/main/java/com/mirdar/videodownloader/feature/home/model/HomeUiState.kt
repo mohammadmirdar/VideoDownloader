@@ -6,7 +6,8 @@ import kotlinx.collections.immutable.persistentListOf
 
 data class HomeUiState(
     val videoInfo: VideoInfo = VideoInfo(),
-    val downloads: ImmutableList<DownloadItem> = persistentListOf()
+    val downloads: ImmutableList<DownloadItem> = persistentListOf(),
+    val copiedText: String = ""
 )
 
 data class VideoInfo(

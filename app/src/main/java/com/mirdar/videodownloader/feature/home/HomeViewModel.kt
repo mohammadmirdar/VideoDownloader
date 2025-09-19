@@ -1,6 +1,8 @@
 package com.mirdar.videodownloader.feature.home
 
-import android.util.Log
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.retrofit.adapter.either.networkhandling.CallError
@@ -29,6 +31,7 @@ import com.mirdar.videodownloader.util.StringResourceProvider
 import com.mirdar.videodownloader.util.toError
 import com.mirdar.videodownloader.util.toSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,8 +43,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val appConfig: AppConfig,
     private val requestVideoInfo: GetVideoInfoUseCase,
     private val createFileDownload: CreateFileDownloadUseCase,
@@ -192,5 +197,18 @@ class HomeViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun onPasteClicked() {
+        val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val item = clipboard.primaryClip?.getItemAt(0)
+        val text = item?.text.toString()
+
+        if (text.isNotEmpty()) {
+            _state.update { value ->
+                (value.data?.copy(copiedText = text) ?: HomeUiState(copiedText = text)).toSuccess()
+            }
+        }
+
     }
 }

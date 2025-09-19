@@ -52,7 +52,7 @@ fun HomeScreen(
         HomeContent(
             uiState = it,
             onDownloadClick = homeViewModel::onDownloadClicked,
-            onPasteClick = {}
+            onPasteClick = homeViewModel::onPasteClicked
         )
     }
 }
@@ -64,7 +64,7 @@ private fun HomeContent(
     onPasteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var textValue by remember { mutableStateOf("") }
+    var textValue by remember(uiState.copiedText) { mutableStateOf(uiState.copiedText) }
     var nativeAdView: AdiveryNativeAdView? by remember { mutableStateOf(null) }
 
     LaunchedEffect(nativeAdView) {
