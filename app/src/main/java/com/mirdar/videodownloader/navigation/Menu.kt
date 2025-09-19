@@ -5,11 +5,13 @@ import androidx.compose.runtime.Stable
 import com.mirdar.videodownloader.R
 import com.mirdar.videodownloader.navigation.Screen
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.serialization.Serializable
 import com.mirdar.designsystem.R as designsystemR
 
 sealed class Menu {
 
     @Stable
+    @Serializable
     data class MenuItem(
         val screen: Screen,
         @StringRes val title: Int,

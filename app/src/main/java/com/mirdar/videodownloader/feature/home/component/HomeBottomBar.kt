@@ -17,13 +17,14 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.com.mirdar.videodownloader.navigation.Menu
 import com.mirdar.videodownloader.com.mirdar.videodownloader.navigation.getMenus
+import com.mirdar.videodownloader.navigation.Screen
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun HomeBottomBar(
     menus: ImmutableList<Menu.MenuItem>,
     currentDestination: NavDestination?,
-    onNavigate: (Menu.MenuItem) -> Unit,
+    onNavigate: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     NavigationBar(
@@ -43,7 +44,7 @@ internal fun HomeBottomBar(
 
                 NavigationBarItem(
                     selected = false,
-                    onClick = { onNavigate(item) },
+                    onClick = { onNavigate(item.screen) },
                     icon = {
                         NavigationIcon(
                             item = item,
