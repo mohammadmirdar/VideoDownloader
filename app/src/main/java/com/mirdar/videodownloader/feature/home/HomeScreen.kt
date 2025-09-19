@@ -35,6 +35,7 @@ import com.mirdar.designsystem.components.GradientButton
 import com.mirdar.designsystem.components.GradientOutlineButton
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.R
+import com.mirdar.videodownloader.com.mirdar.videodownloader.navigation.getMenus
 import com.mirdar.videodownloader.com.mirdar.videodownloader.util.onSuccess
 import com.mirdar.videodownloader.feature.home.component.HomeBottomBar
 import com.mirdar.videodownloader.feature.home.component.HomeTopBar
@@ -47,20 +48,12 @@ fun HomeScreen(
 ) {
     val state by homeViewModel.state.collectAsStateWithLifecycle()
 
-    Scaffold(containerColor = VideoDownloaderTheme.colors.white,
-        topBar = {
-        HomeTopBar(modifier = Modifier)
-    }, bottomBar = {
-        HomeBottomBar()
-    }) { paddingValues ->
-        state.onSuccess {
-            HomeContent(
-                uiState = it,
-                onDownloadClick = homeViewModel::onDownloadClicked,
-                onPasteClick = {},
-                modifier = Modifier.padding(paddingValues)
-            )
-        }
+    state.onSuccess {
+        HomeContent(
+            uiState = it,
+            onDownloadClick = homeViewModel::onDownloadClicked,
+            onPasteClick = {}
+        )
     }
 }
 

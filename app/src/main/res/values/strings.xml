@@ -23,4 +23,7 @@
     <string name="download_failed">Download failed</string>
     <string name="go_to_download">Go to download</string>
     <string name="download_finished">Download finished</string>
+    <string name="home">Home</string>
+    <string name="history">History</string>
+    <string name="favorite">Favorite</string>
 </resources>

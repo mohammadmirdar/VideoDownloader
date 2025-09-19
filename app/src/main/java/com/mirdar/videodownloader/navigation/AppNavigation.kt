@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.mirdar.videodownloader.feature.home.HomeScreen
+import com.mirdar.videodownloader.com.mirdar.videodownloader.navigation.MainScreen
 
 @Composable
 fun AppNavigation(
@@ -18,12 +18,12 @@ fun AppNavigation(
         navController = navController,
         startDestination = startDestination,
     ) {
-        home()
+        main()
     }
 }
 
-fun NavGraphBuilder.home() {
+fun NavGraphBuilder.main() {
     composable<Screen.Home> {
-        HomeScreen()
+        MainScreen()
     }
 }
