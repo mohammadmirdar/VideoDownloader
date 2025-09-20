@@ -19,5 +19,6 @@ data class VideoDownloaderColors(
     val layer05: Color = Color(0xFFEDF1F5),
     val layer85: Color = Color(0xFF252629),
     val studentCardFocused: Color = Color(0xFF4A3403),
-    val success: Color = Color(0xFF64DE9C)
+    val success: Color = Color(0xFF64DE9C),
+    val error: Color = Color(0xFFE91E1E)
 )

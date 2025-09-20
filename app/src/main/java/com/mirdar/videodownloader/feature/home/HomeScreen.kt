@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,10 +35,7 @@ import com.mirdar.designsystem.components.GradientButton
 import com.mirdar.designsystem.components.GradientOutlineButton
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.R
-import com.mirdar.videodownloader.com.mirdar.videodownloader.navigation.getMenus
-import com.mirdar.videodownloader.com.mirdar.videodownloader.util.onSuccess
-import com.mirdar.videodownloader.feature.home.component.HomeBottomBar
-import com.mirdar.videodownloader.feature.home.component.HomeTopBar
+import com.mirdar.videodownloader.com.mirdar.videodownloader.feature.home.model.HomeError
 import com.mirdar.videodownloader.feature.home.component.LatestDownloadList
 import com.mirdar.videodownloader.feature.home.model.HomeUiState
 
@@ -48,13 +45,12 @@ fun HomeScreen(
 ) {
     val state by homeViewModel.state.collectAsStateWithLifecycle()
 
-    state.onSuccess {
-        HomeContent(
-            uiState = it,
-            onDownloadClick = homeViewModel::onDownloadClicked,
-            onPasteClick = homeViewModel::onPasteClicked
-        )
-    }
+    HomeContent(
+        uiState = state,
+        onDownloadClick = homeViewModel::onDownloadClicked,
+        onPasteClick = homeViewModel::onPasteClicked,
+        onClearError = homeViewModel::clearInputError
+    )
 }
 
 @Composable
@@ -62,6 +58,7 @@ private fun HomeContent(
     uiState: HomeUiState,
     onDownloadClick: (String) -> Unit,
     onPasteClick: () -> Unit,
+    onClearError: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var textValue by remember(uiState.copiedText) { mutableStateOf(uiState.copiedText) }
@@ -72,12 +69,21 @@ private fun HomeContent(
     }
 
     Column(
-        modifier = modifier.padding(horizontal = 26.dp).verticalScroll(rememberScrollState()),
+        modifier = modifier
+            .padding(horizontal = 26.dp)
+            .verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.height(26.dp))
 
         OutlinedTextField(
-            value = textValue, onValueChange = { textValue = it }, placeholder = {
+            value = textValue,
+            onValueChange = {
+                textValue = it
+                if (uiState.homeError is HomeError.EmptyInput) {
+                    onClearError()
+                }
+            },
+            placeholder = {
                 Text(
                     text = stringResource(R.string.paste_link_here)
                 )
@@ -90,6 +96,16 @@ private fun HomeContent(
             ),
             modifier = Modifier.fillMaxWidth(),
             maxLines = 1,
+            isError = uiState.homeError is HomeError.EmptyInput,
+            supportingText = {
+                if (uiState.homeError is HomeError.EmptyInput) {
+                    Text(
+                        text = uiState.homeError.message,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = VideoDownloaderTheme.colors.error
+                    )
+                }
+            }
         )
 
         Spacer(Modifier.height(20.dp))

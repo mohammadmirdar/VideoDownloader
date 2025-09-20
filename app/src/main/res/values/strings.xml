@@ -26,4 +26,5 @@
     <string name="home">Home</string>
     <string name="history">History</string>
     <string name="favorite">Favorite</string>
+    <string name="input_is_empty">Input field should not be empty</string>
 </resources>

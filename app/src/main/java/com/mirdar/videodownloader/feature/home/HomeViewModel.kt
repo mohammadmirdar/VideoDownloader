@@ -17,6 +17,7 @@ import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.use
 import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.usecase.GetDownloadStateUseCase
 import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.usecase.GetDownloadStatusUseCase
 import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.usecase.RetryDownloadUseCase
+import com.mirdar.videodownloader.com.mirdar.videodownloader.feature.home.model.HomeError
 import com.mirdar.videodownloader.com.mirdar.videodownloader.feature.home.model.HomeUiEvents
 import com.mirdar.videodownloader.com.mirdar.videodownloader.util.com.mirdar.videodownloader.util.DownloaderSnackUiEvent
 import com.mirdar.videodownloader.domain.home.model.VideoInfoModel
@@ -25,11 +26,8 @@ import com.mirdar.videodownloader.feature.home.model.HomeUiState
 import com.mirdar.videodownloader.feature.home.model.VideoInfo
 import com.mirdar.videodownloader.model.AppConfig
 import com.mirdar.videodownloader.util.GetString
-import com.mirdar.videodownloader.util.NetworkState
 import com.mirdar.videodownloader.util.State
 import com.mirdar.videodownloader.util.StringResourceProvider
-import com.mirdar.videodownloader.util.toError
-import com.mirdar.videodownloader.util.toSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
@@ -43,6 +41,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+typealias HomeState<T> = State<Unit, T, HomeError>
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -59,7 +58,7 @@ class HomeViewModel @Inject constructor(
     private val stringResourceProvider: StringResourceProvider
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<NetworkState<HomeUiState>>(State.Loading())
+    private val _state = MutableStateFlow(HomeUiState())
     val state = _state.asStateFlow()
 
     private val _event = Channel<HomeUiEvents>(Channel.BUFFERED)
@@ -80,7 +79,7 @@ class HomeViewModel @Inject constructor(
                 _state.update {
                     HomeUiState(
                         downloads = state.items
-                    ).toSuccess()
+                    )
                 }
             }
             .launchIn(viewModelScope)
@@ -142,25 +141,31 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onDownloadClicked(videoUrl: String) {
-        Adivery.showAd(appConfig.adiveryRewardId)
-        currentRequestedVideo = videoUrl
+        if (videoUrl.isNotEmpty()) {
+            Adivery.showAd(appConfig.adiveryRewardId)
+            currentRequestedVideo = videoUrl
+        } else {
+            _state.update { it.copy(homeError = HomeError.EmptyInput(message = context.getString(R.string.input_is_empty))) }
+        }
     }
 
     private fun onRightVideoInfo(videoInfoModel: VideoInfoModel) {
         onStartDownload(video = videoInfoModel)
 
-        _state.value = HomeUiState(
-            videoInfo = VideoInfo(
-                description = videoInfoModel.description,
-                directUrl = videoInfoModel.directUrl,
-                thumbnail = videoInfoModel.thumbnail,
-                title = videoInfoModel.title
+        _state.update {
+            it.copy(
+                videoInfo = VideoInfo(
+                    description = videoInfoModel.description,
+                    directUrl = videoInfoModel.directUrl,
+                    thumbnail = videoInfoModel.thumbnail,
+                    title = videoInfoModel.title
+                )
             )
-        ).toSuccess()
+        }
     }
 
     private fun onLeftVideoInfo(callError: CallError) {
-        _state.value = callError.toError()
+        _state.update { it.copy(homeError = HomeError.NetworkError(callError = callError)) }
     }
 
     fun onStartDownload(video: VideoInfoModel) {
@@ -205,10 +210,13 @@ class HomeViewModel @Inject constructor(
         val text = item?.text.toString()
 
         if (text.isNotEmpty()) {
-            _state.update { value ->
-                (value.data?.copy(copiedText = text) ?: HomeUiState(copiedText = text)).toSuccess()
+            _state.update {
+                it.copy(copiedText = text)
             }
         }
+    }
 
+    fun clearInputError() {
+        _state.update { it.copy(homeError = HomeError.None) }
     }
 }
