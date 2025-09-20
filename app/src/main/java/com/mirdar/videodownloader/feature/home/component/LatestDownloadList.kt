@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadItem
+import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadStatus
+import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadsState
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -99,10 +103,12 @@ private fun DownloadItem(downloadItem: DownloadItem, modifier: Modifier = Modifi
                 overflow = TextOverflow.Ellipsis
             )
 
-            GradientLinearProgressBar(
-                progress = downloadItem.progress,
-                modifier = Modifier.padding(end = 18.dp)
-            )
+            if (downloadItem.status != DownloadStatus.Completed) {
+                GradientLinearProgressBar(
+                    progress = downloadItem.progress,
+                    modifier = Modifier.padding(end = 18.dp)
+                )
+            }
         }
 
         VerticalDivider(
@@ -113,8 +119,20 @@ private fun DownloadItem(downloadItem: DownloadItem, modifier: Modifier = Modifi
             color = VideoDownloaderTheme.colors.darkGray
         )
 
+        val imageVector = when (downloadItem.status) {
+            DownloadStatus.Failed -> {
+                Icons.Default.Refresh
+            }
+            DownloadStatus.Paused -> {
+                Icons.Default.PlayArrow
+            }
+            else -> {
+                Icons.Default.Clear
+            }
+        }
+
         Icon(
-            Icons.Default.Clear,
+            imageVector = imageVector,
             contentDescription = null,
             modifier = Modifier.size(30.dp),
             tint = VideoDownloaderTheme.colors.darkGray
