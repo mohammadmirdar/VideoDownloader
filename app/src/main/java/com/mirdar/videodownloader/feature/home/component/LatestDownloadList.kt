@@ -1,6 +1,7 @@
 package com.mirdar.videodownloader.feature.home.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,7 @@ import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.mod
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun LatestDownloadList(downloadList: ImmutableList<DownloadItem>, modifier: Modifier = Modifier) {
+fun LatestDownloadList(downloadList: ImmutableList<DownloadItem>, onViewAllClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -53,17 +54,19 @@ fun LatestDownloadList(downloadList: ImmutableList<DownloadItem>, modifier: Modi
                 HorizontalDivider(thickness = 2.dp, color = VideoDownloaderTheme.colors.gray)
             }
 
-            ViewAllItem()
+            ViewAllItem(onClick = onViewAllClick)
         }
     }
 }
 
 @Composable
-private fun ViewAllItem(modifier: Modifier = Modifier) {
+private fun ViewAllItem(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(35.dp), contentAlignment = Alignment.Center
+            .height(35.dp)
+            .clickable(onClick = onClick)
+        , contentAlignment = Alignment.Center
     ) {
         Text(
             text = "View All",

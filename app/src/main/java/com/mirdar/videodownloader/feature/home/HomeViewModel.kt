@@ -219,4 +219,8 @@ class HomeViewModel @Inject constructor(
     fun clearInputError() {
         _state.update { it.copy(homeError = HomeError.None) }
     }
+
+    fun onViewAllClicked() {
+        _event.trySend(HomeUiEvents.NavigateToHistory)
+    }
 }

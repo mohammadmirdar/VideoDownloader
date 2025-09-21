@@ -36,20 +36,30 @@ import com.mirdar.designsystem.components.GradientOutlineButton
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.R
 import com.mirdar.videodownloader.com.mirdar.videodownloader.feature.home.model.HomeError
+import com.mirdar.videodownloader.com.mirdar.videodownloader.feature.home.model.HomeUiEvents
+import com.mirdar.videodownloader.com.mirdar.videodownloader.util.CollectAsEffect
 import com.mirdar.videodownloader.feature.home.component.LatestDownloadList
 import com.mirdar.videodownloader.feature.home.model.HomeUiState
 
 @Composable
 fun HomeScreen(
+    onNavigateToHistory: () -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by homeViewModel.state.collectAsStateWithLifecycle()
+
+    homeViewModel.event.CollectAsEffect {
+        if (it is HomeUiEvents.NavigateToHistory) {
+            onNavigateToHistory()
+        }
+    }
 
     HomeContent(
         uiState = state,
         onDownloadClick = homeViewModel::onDownloadClicked,
         onPasteClick = homeViewModel::onPasteClicked,
-        onClearError = homeViewModel::clearInputError
+        onClearError = homeViewModel::clearInputError,
+        onViewAllClick = homeViewModel::onViewAllClicked
     )
 }
 
@@ -59,6 +69,7 @@ private fun HomeContent(
     onDownloadClick: (String) -> Unit,
     onPasteClick: () -> Unit,
     onClearError: () -> Unit,
+    onViewAllClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var textValue by remember(uiState.copiedText) { mutableStateOf(uiState.copiedText) }
@@ -117,7 +128,7 @@ private fun HomeContent(
 
         Spacer(Modifier.height(22.dp))
 
-        LatestDownloadList(downloadList = uiState.downloads)
+        LatestDownloadList(downloadList = uiState.downloads, onViewAllClick = onViewAllClick)
 
         Spacer(Modifier.height(22.dp))
 
@@ -164,6 +175,8 @@ fun ButtonRow(
 @Preview(device = "id:pixel_8_pro")
 private fun HomeScreenPreview() {
     VideoDownloaderTheme {
-        HomeScreen()
+        HomeScreen(
+            onNavigateToHistory = {}
+        )
     }
 }

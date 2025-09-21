@@ -6,6 +6,7 @@ sealed class HomeUiEvents {
 
     data class Message(val snackBar: DownloaderSnackUiEvent.Snackbar) : HomeUiEvents()
     data object NavigateToDownload: HomeUiEvents()
+    data object NavigateToHistory: HomeUiEvents()
     data object HideToast: HomeUiEvents()
 
     data class Toast(val snackBar: DownloaderSnackUiEvent.Snackbar) : HomeUiEvents()
