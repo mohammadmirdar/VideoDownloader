@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -32,11 +35,15 @@ import coil3.compose.AsyncImage
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadItem
 import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadStatus
-import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadsState
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
-fun LatestDownloadList(downloadList: ImmutableList<DownloadItem>, onViewAllClick: () -> Unit, modifier: Modifier = Modifier) {
+fun LatestDownloadList(
+    downloadList: ImmutableList<DownloadItem>,
+    onViewAllClick: () -> Unit,
+    showButton: Boolean = true,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -45,16 +52,23 @@ fun LatestDownloadList(downloadList: ImmutableList<DownloadItem>, onViewAllClick
             )
             .padding(8.dp)
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            downloadList.take(3).forEach { downloadItem ->
-                DownloadItem(downloadItem = downloadItem)
+            items(
+                items = downloadList,
+                key = { key -> key.id }
+            ) {
+                DownloadItem(downloadItem = it)
                 HorizontalDivider(thickness = 2.dp, color = VideoDownloaderTheme.colors.gray)
             }
 
-            ViewAllItem(onClick = onViewAllClick)
+            if (showButton) {
+                item {
+                    ViewAllItem(onClick = onViewAllClick)
+                }
+            }
         }
     }
 }
@@ -65,8 +79,7 @@ private fun ViewAllItem(onClick: () -> Unit, modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .height(35.dp)
-            .clickable(onClick = onClick)
-        , contentAlignment = Alignment.Center
+            .clickable(onClick = onClick), contentAlignment = Alignment.Center
     ) {
         Text(
             text = "View All",
@@ -87,9 +100,10 @@ private fun DownloadItem(downloadItem: DownloadItem, modifier: Modifier = Modifi
             model = downloadItem.poster,
             contentDescription = null,
             modifier = Modifier
-                .height(55.dp)
-                .aspectRatio(1.618f)
-                .clip(RoundedCornerShape(15.dp)),
+                .height(50.dp)
+                .width(80.dp)
+                .padding(2.dp)
+                .clip(RoundedCornerShape(10.dp)),
             contentScale = ContentScale.Crop
         )
 
@@ -114,31 +128,37 @@ private fun DownloadItem(downloadItem: DownloadItem, modifier: Modifier = Modifi
             }
         }
 
-        VerticalDivider(
-            Modifier
-                .height(32.dp)
-                .clip(RoundedCornerShape(8.dp)),
-            thickness = 2.dp,
-            color = VideoDownloaderTheme.colors.darkGray
-        )
+        if (downloadItem.status != DownloadStatus.Completed) {
+            VerticalDivider(
+                Modifier
+                    .height(32.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                thickness = 2.dp,
+                color = VideoDownloaderTheme.colors.darkGray
+            )
 
-        val imageVector = when (downloadItem.status) {
-            DownloadStatus.Failed -> {
-                Icons.Default.Refresh
+            val imageVector = when (downloadItem.status) {
+                DownloadStatus.Failed -> {
+                    Icons.Default.Refresh
+                }
+
+                DownloadStatus.Paused -> {
+                    Icons.Default.PlayArrow
+                }
+
+                else -> {
+                    Icons.Default.Clear
+                }
             }
-            DownloadStatus.Paused -> {
-                Icons.Default.PlayArrow
-            }
-            else -> {
-                Icons.Default.Clear
-            }
+
+            Icon(
+                imageVector = imageVector,
+                contentDescription = null,
+                modifier = Modifier.size(30.dp),
+                tint = VideoDownloaderTheme.colors.darkGray
+            )
         }
 
-        Icon(
-            imageVector = imageVector,
-            contentDescription = null,
-            modifier = Modifier.size(30.dp),
-            tint = VideoDownloaderTheme.colors.darkGray
-        )
+
     }
 }

@@ -30,6 +30,7 @@ import com.mirdar.videodownloader.util.State
 import com.mirdar.videodownloader.util.StringResourceProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -78,7 +79,7 @@ class HomeViewModel @Inject constructor(
             .onEach { state ->
                 _state.update {
                     HomeUiState(
-                        downloads = state.items
+                        downloads = state.items.take(3).toImmutableList()
                     )
                 }
             }
