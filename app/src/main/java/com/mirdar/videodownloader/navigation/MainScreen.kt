@@ -7,8 +7,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -37,7 +39,9 @@ fun MainScreen(
             HomeBottomBar(
                 menus = menuItems,
                 currentDestination = navBackStackEntry?.destination,
-                onNavigate = navController::navigate,
+                onNavigate = {
+                    navController.navigateByMenuItem(screen = it)
+                },
             )
         }
     ) { paddingValues ->
@@ -63,6 +67,18 @@ fun NavGraphBuilder.homeScreen(onNavigateToHistory: () -> Unit) {
 fun NavGraphBuilder.historyScreen() {
     composable<Screen.History> {
         HistoryScreen()
+    }
+}
+
+fun NavController.navigateByMenuItem(
+    screen: Screen
+) {
+    navigate(route = screen) {
+        popUpTo(id = graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 
