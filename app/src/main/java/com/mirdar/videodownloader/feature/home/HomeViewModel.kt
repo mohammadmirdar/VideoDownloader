@@ -3,6 +3,8 @@ package com.mirdar.videodownloader.feature.home
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.retrofit.adapter.either.networkhandling.CallError
@@ -40,7 +42,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 typealias HomeState<T> = State<Unit, T, HomeError>
 
@@ -79,7 +83,10 @@ class HomeViewModel @Inject constructor(
             .onEach { state ->
                 _state.update {
                     HomeUiState(
-                        downloads = state.items.take(3).toImmutableList()
+                        downloads = state.items
+                            .take(3)
+                            .filter { item -> context.uriExists(item.fileUri.toUri()) }
+                            .toImmutableList()
                     )
                 }
             }
@@ -223,5 +230,16 @@ class HomeViewModel @Inject constructor(
 
     fun onViewAllClicked() {
         _event.trySend(HomeUiEvents.NavigateToHistory)
+    }
+}
+
+fun Context.uriExists(uri: Uri): Boolean {
+    return try {
+        contentResolver.query(uri, arrayOf(MediaStore.MediaColumns._ID), null, null, null)
+            ?.use { cursor ->
+                cursor.moveToFirst() // true if at least one row exists
+            } ?: false
+    } catch (e: Exception) {
+        false
     }
 }

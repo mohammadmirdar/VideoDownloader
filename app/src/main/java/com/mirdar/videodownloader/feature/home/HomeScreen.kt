@@ -25,6 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -75,6 +77,13 @@ private fun HomeContent(
 ) {
     var textValue by remember(uiState.copiedText) { mutableStateOf(uiState.copiedText) }
     var nativeAdView: AdiveryNativeAdView? by remember { mutableStateOf(null) }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(textValue.isEmpty()) {
+        if (textValue.isNotEmpty()) {
+            focusRequester.requestFocus()
+        }
+    }
 
     LaunchedEffect(nativeAdView) {
         nativeAdView?.loadAd()
@@ -106,7 +115,9 @@ private fun HomeContent(
                 unfocusedBorderColor = VideoDownloaderTheme.colors.gray,
                 focusedTextColor = VideoDownloaderTheme.colors.black
             ),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             maxLines = 1,
             isError = uiState.homeError is HomeError.EmptyInput,
             supportingText = {
