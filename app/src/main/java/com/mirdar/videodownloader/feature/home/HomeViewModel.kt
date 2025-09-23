@@ -1,10 +1,13 @@
 package com.mirdar.videodownloader.feature.home
 
+import android.content.ActivityNotFoundException
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.retrofit.adapter.either.networkhandling.CallError
@@ -42,9 +45,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 typealias HomeState<T> = State<Unit, T, HomeError>
 
@@ -230,6 +231,28 @@ class HomeViewModel @Inject constructor(
 
     fun onViewAllClicked() {
         _event.trySend(HomeUiEvents.NavigateToHistory)
+    }
+
+    fun onItemClicked(item: DownloadItem) {
+        if (context.uriExists(item.fileUri.toUri())) {
+            openExternalPlayer(item.fileUri)
+        }
+    }
+
+    private fun openExternalPlayer(fileUri: String) {
+        val uri = fileUri.toUri()
+
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "video/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+        try {
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+
+        }
     }
 }
 

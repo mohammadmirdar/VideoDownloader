@@ -38,6 +38,7 @@ import com.mirdar.designsystem.components.GradientButton
 import com.mirdar.designsystem.components.GradientOutlineButton
 import com.mirdar.designsystem.theme.VideoDownloaderTheme
 import com.mirdar.videodownloader.R
+import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadItem
 import com.mirdar.videodownloader.com.mirdar.videodownloader.feature.home.model.HomeError
 import com.mirdar.videodownloader.com.mirdar.videodownloader.feature.home.model.HomeUiEvents
 import com.mirdar.videodownloader.com.mirdar.videodownloader.util.CollectAsEffect
@@ -62,7 +63,8 @@ fun HomeScreen(
         onDownloadClick = homeViewModel::onDownloadClicked,
         onPasteClick = homeViewModel::onPasteClicked,
         onClearError = homeViewModel::clearInputError,
-        onViewAllClick = homeViewModel::onViewAllClicked
+        onViewAllClick = homeViewModel::onViewAllClicked,
+        onItemClick = homeViewModel::onItemClicked
     )
 }
 
@@ -73,6 +75,7 @@ private fun HomeContent(
     onPasteClick: () -> Unit,
     onClearError: () -> Unit,
     onViewAllClick: () -> Unit,
+    onItemClick: (DownloadItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var textValue by remember(uiState.copiedText) { mutableStateOf(uiState.copiedText) }
@@ -143,6 +146,7 @@ private fun HomeContent(
         LatestDownloadList(
             downloadList = uiState.downloads,
             onViewAllClick = onViewAllClick,
+            onItemClick = onItemClick,
             modifier = Modifier.heightIn(max = 300.dp)
         )
 

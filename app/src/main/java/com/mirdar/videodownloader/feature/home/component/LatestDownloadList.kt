@@ -41,6 +41,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun LatestDownloadList(
     downloadList: ImmutableList<DownloadItem>,
     onViewAllClick: () -> Unit,
+    onItemClick: (DownloadItem) -> Unit,
     showButton: Boolean = true,
     modifier: Modifier = Modifier
 ) {
@@ -60,7 +61,7 @@ fun LatestDownloadList(
                 items = downloadList,
                 key = { key -> key.id }
             ) {
-                DownloadItem(downloadItem = it)
+                DownloadItem(downloadItem = it, onClick = { onItemClick(it) })
                 HorizontalDivider(thickness = 2.dp, color = VideoDownloaderTheme.colors.gray)
             }
 
@@ -90,9 +91,9 @@ private fun ViewAllItem(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun DownloadItem(downloadItem: DownloadItem, modifier: Modifier = Modifier) {
+private fun DownloadItem(downloadItem: DownloadItem, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier,
+        modifier = modifier.clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp, alignment = Alignment.CenterHorizontally)
     ) {

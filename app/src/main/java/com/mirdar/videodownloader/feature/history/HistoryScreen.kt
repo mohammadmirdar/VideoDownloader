@@ -27,6 +27,7 @@ private fun HistoryContent(
         downloadList = state.downloads,
         modifier = Modifier.fillMaxSize(),
         onViewAllClick = {},
-        showButton = false
+        showButton = false,
+        onItemClick = {}
     )
 }
