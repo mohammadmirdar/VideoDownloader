@@ -23,11 +23,13 @@ fun HistoryScreen(
 private fun HistoryContent(
     state: HistoryUiState
 ){
-    LatestDownloadList(
-        downloadList = state.downloads,
-        modifier = Modifier.fillMaxSize(),
-        onViewAllClick = {},
-        showButton = false,
-        onItemClick = {}
-    )
+    if (state.downloads.isNotEmpty()) {
+        LatestDownloadList(
+            downloadList = state.downloads,
+            modifier = Modifier.fillMaxSize(),
+            onViewAllClick = {},
+            showButton = false,
+            onItemClick = {}
+        )
+    }
 }

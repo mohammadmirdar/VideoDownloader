@@ -62,7 +62,7 @@ fun LatestDownloadList(
                 key = { key -> key.id }
             ) {
                 DownloadItem(downloadItem = it, onClick = { onItemClick(it) })
-                HorizontalDivider(thickness = 2.dp, color = VideoDownloaderTheme.colors.gray)
+                HorizontalDivider(thickness = 1.dp, color = VideoDownloaderTheme.colors.gray)
             }
 
             if (showButton) {
@@ -132,9 +132,9 @@ private fun DownloadItem(downloadItem: DownloadItem, onClick: () -> Unit, modifi
         if (downloadItem.status != DownloadStatus.Completed) {
             VerticalDivider(
                 Modifier
-                    .height(32.dp)
+                    .height(28.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                thickness = 2.dp,
+                thickness = 1.dp,
                 color = VideoDownloaderTheme.colors.darkGray
             )
 
@@ -155,7 +155,7 @@ private fun DownloadItem(downloadItem: DownloadItem, onClick: () -> Unit, modifi
             Icon(
                 imageVector = imageVector,
                 contentDescription = null,
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier.size(28.dp),
                 tint = VideoDownloaderTheme.colors.darkGray
             )
         }
