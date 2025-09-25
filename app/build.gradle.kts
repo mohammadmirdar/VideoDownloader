@@ -25,7 +25,7 @@ android {
         buildConfigField(
             "String",
             "KEY_BASE_URL",
-            "\"http://192.168.1.117:8080/api/\""
+            "\"http://146.19.212.229:8080/api/\""
         )
 
         buildConfigField(
