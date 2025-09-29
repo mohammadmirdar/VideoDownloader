@@ -137,6 +137,7 @@ private fun HomeContent(
         Spacer(Modifier.height(20.dp))
 
         ButtonRow(
+            isLoading = uiState.isLoading,
             onDownloadClick = { onDownloadClick(textValue) },
             onPasteClick = onPasteClick
         )
@@ -167,6 +168,7 @@ private fun HomeContent(
 
 @Composable
 fun ButtonRow(
+    isLoading: Boolean,
     onDownloadClick: () -> Unit,
     onPasteClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -185,6 +187,7 @@ fun ButtonRow(
         GradientButton(
             text = stringResource(R.string.download),
             isSelected = true,
+            isLoading = isLoading,
             onClick = onDownloadClick,
             modifier = Modifier.weight(1f)
         )

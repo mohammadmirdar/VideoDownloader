@@ -134,6 +134,7 @@ class HomeViewModel @Inject constructor(
     private fun listenOnAdivery() {
         Adivery.addGlobalListener(object : AdiveryListener() {
             override fun onRewardedAdClosed(placementId: String, isRewarded: Boolean) {
+                _state.update { it.copy(isLoading = true) }
                 if (isRewarded) {
                     getVideoInfo(url = currentRequestedVideo)
                 }
@@ -168,13 +169,14 @@ class HomeViewModel @Inject constructor(
                     directUrl = videoInfoModel.directUrl,
                     thumbnail = videoInfoModel.thumbnail,
                     title = videoInfoModel.title
-                )
+                ),
+                isLoading = false
             )
         }
     }
 
     private fun onLeftVideoInfo(callError: CallError) {
-        _state.update { it.copy(homeError = HomeError.NetworkError(callError = callError)) }
+        _state.update { it.copy(homeError = HomeError.NetworkError(callError = callError), isLoading = false) }
     }
 
     fun onStartDownload(video: VideoInfoModel) {
