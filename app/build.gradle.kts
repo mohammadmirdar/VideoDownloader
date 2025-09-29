@@ -25,7 +25,7 @@ android {
         buildConfigField(
             "String",
             "KEY_BASE_URL",
-            "\"http://146.19.212.229:8080/api/\""
+            "\"https://api.videodownloader.ir/api/\""
         )
 
         buildConfigField(
