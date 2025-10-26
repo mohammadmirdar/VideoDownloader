@@ -34,23 +34,27 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 30.sp,
         lineHeight = 42.sp,
-        letterSpacing = 0.sp
+        letterSpacing = 0.sp,
+        fontFamily = samimFontFamily
     ),
     titleLarge = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.sp
+        letterSpacing = 0.sp,
+        fontFamily = samimFontFamily
     ),
     bodyLarge = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         lineHeight = 20.sp,
-        letterSpacing = 0.15.sp
+        letterSpacing = 0.15.sp,
+        fontFamily = samimFontFamily
     ),
     bodyMedium = TextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
+        fontFamily = samimFontFamily
     ),
 )

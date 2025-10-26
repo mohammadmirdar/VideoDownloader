@@ -42,8 +42,8 @@ fun LatestDownloadList(
     downloadList: ImmutableList<DownloadItem>,
     onViewAllClick: () -> Unit,
     onItemClick: (DownloadItem) -> Unit,
+    modifier: Modifier = Modifier,
     showButton: Boolean = true,
-    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier

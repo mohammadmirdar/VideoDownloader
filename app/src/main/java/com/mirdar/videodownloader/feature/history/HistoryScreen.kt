@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.mirdar.videodownloader.com.mirdar.videodownloader.downloadmanager.model.DownloadItem
 import com.mirdar.videodownloader.com.mirdar.videodownloader.feature.history.model.HistoryUiState
 import com.mirdar.videodownloader.feature.home.component.LatestDownloadList
 
@@ -15,13 +16,15 @@ fun HistoryScreen(
     val state = historyViewModel.state.collectAsStateWithLifecycle()
 
     HistoryContent(
-        state = state.value
+        state = state.value,
+        onItemClick = historyViewModel::onItemClicked
     )
 }
 
 @Composable
 private fun HistoryContent(
-    state: HistoryUiState
+    state: HistoryUiState,
+    onItemClick: (DownloadItem) -> Unit
 ){
     if (state.downloads.isNotEmpty()) {
         LatestDownloadList(
@@ -29,7 +32,7 @@ private fun HistoryContent(
             modifier = Modifier.fillMaxSize(),
             onViewAllClick = {},
             showButton = false,
-            onItemClick = {}
+            onItemClick = onItemClick
         )
     }
 }

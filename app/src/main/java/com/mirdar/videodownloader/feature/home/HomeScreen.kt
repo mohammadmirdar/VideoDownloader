@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -98,6 +99,14 @@ private fun HomeContent(
             .verticalScroll(rememberScrollState()),
     ) {
         Spacer(Modifier.height(26.dp))
+        Text(
+            text = stringResource(R.string.see_ads),
+            style = MaterialTheme.typography.bodyLarge.copy(textDirection = TextDirection.Rtl),
+            color = VideoDownloaderTheme.colors.primary,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(Modifier.height(10.dp))
 
         OutlinedTextField(
             value = textValue,
@@ -144,12 +153,14 @@ private fun HomeContent(
 
         Spacer(Modifier.height(22.dp))
 
-        LatestDownloadList(
-            downloadList = uiState.downloads,
-            onViewAllClick = onViewAllClick,
-            onItemClick = onItemClick,
-            modifier = Modifier.heightIn(max = 300.dp)
-        )
+        if (uiState.downloads.isNotEmpty()) {
+            LatestDownloadList(
+                downloadList = uiState.downloads,
+                onViewAllClick = onViewAllClick,
+                onItemClick = onItemClick,
+                modifier = Modifier.heightIn(max = 300.dp)
+            )
+        }
 
         Spacer(Modifier.height(22.dp))
 
@@ -196,10 +207,15 @@ fun ButtonRow(
 
 @Composable
 @Preview(device = "id:pixel_8_pro")
-private fun HomeScreenPreview() {
+private fun HomeContentPreview() {
     VideoDownloaderTheme {
-        HomeScreen(
-            onNavigateToHistory = {}
+        HomeContent(
+            uiState = HomeUiState(),
+            onDownloadClick = {},
+            onPasteClick = {},
+            onClearError = {},
+            onViewAllClick = {},
+            onItemClick = {}
         )
     }
 }

@@ -48,5 +48,4 @@ sealed class Menu {
 fun getMenus()  = persistentListOf(
     Menu.Items.home,
     Menu.Items.history,
-    Menu.Items.favorite,
 )

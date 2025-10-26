@@ -27,4 +27,6 @@
     <string name="history">History</string>
     <string name="favorite">Favorite</string>
     <string name="input_is_empty">Input field should not be empty</string>
+    <string name="see_ads">شما برای دانلود ویدیو تبلیغات می‌بینید.</string>
+    <string name="ads_info_message">برای اینکه بتوانید ویدیو را دانلود کنید لطفا تبلیغات را تا انتها تمایش فرمایید.</string>
 </resources>
