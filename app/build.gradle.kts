@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.baselineprofile)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -130,5 +132,10 @@ dependencies {
         kapt(room.compiler)
 
         implementation(tonyo.fetch)
+
+        implementation(platform(firebase.bom))
+
+        implementation(firebase.analytics)
+        implementation(firebase.crashlytics)
     }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191827811317",
+    "project_id": "video-downloader-64e80",
+    "storage_bucket": "video-downloader-64e80.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191827811317:android:6c2b7856c4df3893cb1ebc",
+        "android_client_info": {
+          "package_name": "com.mirdar.videodownloader"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtOQSO4Od0pw_uncAAOAP6_LhE5pOjrKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
