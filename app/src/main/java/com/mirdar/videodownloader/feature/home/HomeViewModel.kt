@@ -222,11 +222,11 @@ class HomeViewModel @Inject constructor(
     fun onPasteClicked() {
         val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val item = clipboard.primaryClip?.getItemAt(0)
-        val text = item?.text.toString()
+        val text = item?.text
 
-        if (text.isNotEmpty()) {
+        if (!text.isNullOrEmpty()) {
             _state.update {
-                it.copy(copiedText = text)
+                it.copy(copiedText = text.toString())
             }
         }
     }
