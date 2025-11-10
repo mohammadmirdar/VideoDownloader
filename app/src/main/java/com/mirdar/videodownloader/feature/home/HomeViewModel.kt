@@ -133,6 +133,10 @@ class HomeViewModel @Inject constructor(
 
     private fun listenOnAdivery() {
         Adivery.addGlobalListener(object : AdiveryListener() {
+            override fun onAppOpenAdLoaded(placementId: String) {
+                _state.update { it.copy(copiedText = "") }
+            }
+
             override fun onRewardedAdClosed(placementId: String, isRewarded: Boolean) {
                 _state.update { it.copy(isLoading = true) }
                 if (isRewarded) {
