@@ -1,13 +1,13 @@
 [versions]
 
 # Project Environment Versions
-minSdk = "21"
+minSdk = "24"
 targetSdk = "36"
 jvmTarget = "11"
 compileSdk = "36"
 
-versionCodeTv = "40405061"
-versionNameTv = "1.0.0"
+versionCode = "140408191"
+versionName = "1.0.0"
 
 # Plugin Versions
 agp = "8.11.0"
