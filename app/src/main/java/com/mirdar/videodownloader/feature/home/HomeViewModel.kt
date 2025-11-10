@@ -136,6 +136,8 @@ class HomeViewModel @Inject constructor(
             override fun onRewardedAdClosed(placementId: String, isRewarded: Boolean) {
                 if (isRewarded) {
                     getVideoInfo(url = currentRequestedVideo)
+                } else {
+                    _state.update { it.copy(isLoading = false) }
                 }
             }
         })
@@ -177,7 +179,12 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onLeftVideoInfo(callError: CallError) {
-        _state.update { it.copy(homeError = HomeError.NetworkError(callError = callError), isLoading = false) }
+        _state.update {
+            it.copy(
+                homeError = HomeError.NetworkError(callError = callError),
+                isLoading = false
+            )
+        }
     }
 
     fun onStartDownload(video: VideoInfoModel) {
