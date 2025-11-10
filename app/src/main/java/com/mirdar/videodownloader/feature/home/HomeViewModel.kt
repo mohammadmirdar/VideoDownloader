@@ -133,12 +133,7 @@ class HomeViewModel @Inject constructor(
 
     private fun listenOnAdivery() {
         Adivery.addGlobalListener(object : AdiveryListener() {
-            override fun onAppOpenAdLoaded(placementId: String) {
-                _state.update { it.copy(copiedText = "") }
-            }
-
             override fun onRewardedAdClosed(placementId: String, isRewarded: Boolean) {
-                _state.update { it.copy(isLoading = true) }
                 if (isRewarded) {
                     getVideoInfo(url = currentRequestedVideo)
                 }
@@ -155,6 +150,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onDownloadClicked(videoUrl: String) {
+        _state.update { it.copy(isLoading = true, copiedText = "") }
+
         if (videoUrl.isNotEmpty()) {
             Adivery.showAd(appConfig.adiveryRewardId)
             currentRequestedVideo = videoUrl

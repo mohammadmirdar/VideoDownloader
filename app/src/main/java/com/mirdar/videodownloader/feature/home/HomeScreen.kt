@@ -79,11 +79,12 @@ private fun HomeContent(
     onItemClick: (DownloadItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var textValue by remember(uiState.copiedText) { mutableStateOf(uiState.copiedText) }
+    var textValue by remember(uiState.copiedText) { mutableStateOf("") }
     var nativeAdView: AdiveryNativeAdView? by remember { mutableStateOf(null) }
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(textValue.isEmpty()) {
+    LaunchedEffect(uiState.copiedText) {
+        textValue = uiState.copiedText
         if (textValue.isNotEmpty()) {
             focusRequester.requestFocus()
         }
